@@ -1,18 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Modules\Auth\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use App\Modules\Auth\Services\AuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk menangani authenticated session (login/logout)
+ * Thin controller yang hanya memanggil AuthService
+ */
 class AuthenticatedSessionController extends Controller
 {
+    public function __construct(
+        protected AuthService $authService
+    ) {}
+
     /**
      * Show the login page.
      */
@@ -27,9 +34,14 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $this->authService->authenticate($request);
 
         $request->session()->regenerate();
 
@@ -41,10 +53,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $this->authService->logout($request);
 
         return redirect('/login');
     }

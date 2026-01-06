@@ -1,17 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Settings;
+namespace App\Modules\Settings\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Settings\Services\PasswordService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk menangani password settings
+ * Thin controller yang hanya memanggil PasswordService
+ */
 class PasswordController extends Controller
 {
+    public function __construct(
+        protected PasswordService $passwordService
+    ) {}
+
     /**
      * Show the user's password settings page.
      */
@@ -30,9 +38,7 @@ class PasswordController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
+        $this->passwordService->updatePassword($request->user(), $validated['password']);
 
         return back();
     }
