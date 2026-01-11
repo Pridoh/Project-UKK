@@ -1,25 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\Settings;
+namespace App\Modules\Settings\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Settings\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Modules\Settings\Requests\ProfileUpdateRequest;
+use App\Modules\Settings\Services\ProfileService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk menangani profile settings
+ * Thin controller yang hanya memanggil ProfileService
+ */
 class ProfileController extends Controller
 {
+    public function __construct(
+        protected ProfileService $profileService
+    ) {}
+
     /**
      * Show the user's profile settings page.
      */
     public function edit(Request $request): Response
     {
         return Inertia::render('settings/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $this->profileService->mustVerifyEmail($request->user()),
             'status' => $request->session()->get('status'),
         ]);
     }
@@ -29,13 +36,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
+        $this->profileService->updateProfile($request->user(), $request->validated());
 
         return to_route('profile.edit');
     }
@@ -51,9 +52,9 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        Auth::logout();
+        \Illuminate\Support\Facades\Auth::logout();
 
-        $user->delete();
+        $this->profileService->deleteAccount($user);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

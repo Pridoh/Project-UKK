@@ -1,16 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Modules\Auth\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Auth\Services\AuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk menangani password reset link
+ * Thin controller yang hanya memanggil AuthService
+ */
 class PasswordResetLinkController extends Controller
 {
+    public function __construct(
+        protected AuthService $authService
+    ) {
+    }
+
     /**
      * Show the password reset link request page.
      */
@@ -32,10 +41,9 @@ class PasswordResetLinkController extends Controller
             'email' => 'required|email',
         ]);
 
-        Password::sendResetLink(
-            $request->only('email')
-        );
+        $status = $this->authService->sendPasswordResetLink($request);
 
-        return back()->with('status', __('A reset link will be sent if the account exists.'));
+        return back()->with('status', $status);
     }
 }
+

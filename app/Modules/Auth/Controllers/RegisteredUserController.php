@@ -1,20 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Modules\Auth\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
+use App\Modules\Auth\Services\AuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Controller untuk menangani registrasi user
+ * Thin controller yang hanya memanggil AuthService
+ */
 class RegisteredUserController extends Controller
 {
+    public function __construct(
+        protected AuthService $authService
+    ) {
+    }
+
     /**
      * Show the registration page.
      */
@@ -36,16 +43,9 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
+        $this->authService->register($request);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
 }
+
