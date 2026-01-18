@@ -54,16 +54,16 @@ This project uses a **Modular Monolith** approach to keep the codebase clean, sc
 app/
 └── Modules/
     ├── Auth/
+    │   ├── Config/
     │   ├── Controllers/
     │   ├── Models/
-    │   ├── Routes/
-    │   └── Views/
+    │   ├── Request/
+    │   └── Enum/
     ├── Parking/
     │   ├── Controllers/
     │   ├── Models/
     │   ├── Services/
-    │   ├── Routes/
-    │   └── Views/
+    │   └── Enum/
     ├── Reports/
     └── MasterData/
 ```
