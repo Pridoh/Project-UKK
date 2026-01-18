@@ -37,5 +37,5 @@ test('users can logout', function () {
     $response = $this->actingAs($user)->post('/logout');
 
     $this->assertGuest();
-    $response->assertRedirect('http://127.0.0.1:8000');
+    $response->assertRedirect('/');
 });
