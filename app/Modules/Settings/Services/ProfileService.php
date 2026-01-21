@@ -2,7 +2,7 @@
 
 namespace App\Modules\Settings\Services;
 
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\Request;
 
@@ -41,4 +41,3 @@ class ProfileService
         return $user instanceof MustVerifyEmail;
     }
 }
-
