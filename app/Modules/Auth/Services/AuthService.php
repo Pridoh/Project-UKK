@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Services;
 
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
@@ -22,7 +22,7 @@ use Illuminate\Validation\ValidationException;
 class AuthService
 {
     /**
-     * Authenticate user dengan email dan password
+     * Authenticate user dengan email/username dan password
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -30,7 +30,15 @@ class AuthService
     {
         $this->ensureIsNotRateLimited($request);
 
-        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        $loginField = $request->input('email');
+        $fieldType = filter_var($loginField, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        $credentials = [
+            $fieldType => $loginField,
+            'password' => $request->input('password'),
+        ];
+
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey($request));
 
             throw ValidationException::withMessages([
@@ -47,9 +55,12 @@ class AuthService
     public function register(Request $request): User
     {
         $user = User::create([
+            'id' => Str::uuid(),
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'is_active' => 1, //temporary value, will be change later
         ]);
 
         event(new Registered($user));
@@ -188,6 +199,7 @@ class AuthService
      */
     protected function throttleKey(Request $request): string
     {
-        return Str::transliterate(Str::lower($request->string('email')) . '|' . $request->ip());
+        $loginField = $request->input('email') ?? '';
+        return Str::transliterate(Str::lower($loginField) . '|' . $request->ip());
     }
 }
