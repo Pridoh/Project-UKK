@@ -23,4 +23,6 @@ yarn-error.log
 /.vscode
 /.zed
 prompt.md
+.prompt
+.Soal-UKK
 .agent

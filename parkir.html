@@ -1,0 +1,392 @@
+<!doctype html>
+
+<html class="light" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>ParkFlow Management Landing Page</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: { primary: '#EA2831', 'background-light': '#f8f6f6', 'background-dark': '#211111' },
+                        fontFamily: { display: 'Public Sans' },
+                        borderRadius: { DEFAULT: '0.25rem', lg: '0.5rem', xl: '0.75rem', full: '9999px' },
+                    },
+                },
+            };
+        </script>
+        <style>
+            body {
+                font-family: 'Public Sans', sans-serif;
+            }
+            .material-symbols-outlined {
+                font-variation-settings:
+                    'FILL' 0,
+                    'wght' 400,
+                    'GRAD' 0,
+                    'opsz' 24;
+            }
+        </style>
+    </head>
+    <body class="bg-background-light dark:bg-background-dark text-[#111418] transition-colors duration-200 dark:text-white">
+        <!-- Top Navigation Bar -->
+        <header
+            class="dark:bg-background-dark/80 sticky top-0 z-50 w-full border-b border-[#dbe0e6] bg-white/80 backdrop-blur-md dark:border-gray-800"
+        >
+            <div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4">
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center text-primary">
+                        <span class="material-symbols-outlined text-3xl">local_parking</span>
+                    </div>
+                    <h2 class="text-xl font-black tracking-tight text-[#111418] dark:text-white">ParkFlow</h2>
+                </div>
+                <nav class="hidden items-center gap-10 md:flex">
+                    <a class="text-sm font-semibold transition-colors hover:text-primary" href="#features">Features</a>
+                    <a class="text-sm font-semibold transition-colors hover:text-primary" href="#how-it-works">How it Works</a>
+                    <a class="text-sm font-semibold transition-colors hover:text-primary" href="#about">About</a>
+                </nav>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="rounded-lg bg-[#f0f2f4] px-5 py-2 text-sm font-bold transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+                    >
+                        Login
+                    </button>
+                    <button class="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90">Register</button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <!-- Hero Section -->
+            <section class="mx-auto max-w-[1280px] px-6 py-16 lg:py-24">
+                <div class="grid items-center gap-12 lg:grid-cols-2">
+                    <div class="flex flex-col gap-8">
+                        <div class="flex flex-col gap-4">
+                            <span class="text-xs font-bold tracking-widest text-primary uppercase">Enterprise Solution</span>
+                            <h1 class="text-4xl leading-[1.1] font-black tracking-tight text-[#111418] lg:text-6xl dark:text-white">
+                                Integrated Parking Management for Large Facilities
+                            </h1>
+                            <p class="max-w-[540px] text-lg text-[#617589] dark:text-gray-400">
+                                Scalable solutions for motorcycles, cars, and heavy vehicles in high-traffic environments. Specifically designed for
+                                modern malls and medical centers.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-4">
+                            <button
+                                class="min-w-[160px] rounded-xl bg-primary px-6 py-4 text-base font-bold text-white shadow-lg shadow-primary/20 transition-transform hover:scale-[1.02]"
+                            >
+                                Get Started Now
+                            </button>
+                            <button
+                                class="min-w-[160px] rounded-xl border border-[#dbe0e6] bg-white px-6 py-4 text-base font-bold transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+                            >
+                                Request Demo
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-6 border-t border-[#dbe0e6] pt-4 dark:border-gray-800">
+                            <div class="flex -space-x-3">
+                                <div
+                                    class="h-10 w-10 rounded-full border-2 border-white bg-gray-200 dark:border-gray-900"
+                                    data-alt="User avatar 1"
+                                    style="
+                                        background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCer36LNDvXrAHiF9JxuR60coXMPaWg6dEo_mrV_M59pSp_KLn36Y49aRmcqt00tGH0go6FXE3o0I8tHy2OQcDBjmOCynat4EIko-C4dGR_ttgZ1yJbf1o8L5UotGRS4mvJR37SqwNr1MPUwEManaaQbZmWlJNKpLG078kbzWM1vZVgVfoLwU40y4MTk4psVWN9eUynmtPKUcB4z1FVzI8wg_FDdFWZj7Lk9jwM-h6DdJJbjSHKoDKZ0YKbt7ZZ-F7cmmq15ug-9yA');
+                                    "
+                                ></div>
+                                <div
+                                    class="h-10 w-10 rounded-full border-2 border-white bg-gray-300 dark:border-gray-900"
+                                    data-alt="User avatar 2"
+                                    style="
+                                        background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDAlv_Vw98LvHj3DXA6ZAgRXAXMO9W2yLc1yFE2ZzfgBZ7ArrtakcLl6KNFjVvYB8-v27uTz0qsvIpozc5ROOnbrOwAPY4k48W-HXRS4gwmF7cgMufu7d1562EsxmTf8Ec7l6pVCugMmguOkeDz8dGuBAwctc7vq9uUmOCs8mI4CXkgx6uyGWAiw-nZqJ2ROyg2PJYHUUNJJwjU9kSueaHVlMSip39slVODTHyM5WwTm84Ud3FG-w3_OBbbH26in7LjUMD9JFa8jCw');
+                                    "
+                                ></div>
+                                <div
+                                    class="h-10 w-10 rounded-full border-2 border-white bg-gray-400 dark:border-gray-900"
+                                    data-alt="User avatar 3"
+                                    style="
+                                        background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAppfiAmmbQCqyGkKGIw9AGM4e-X3hDRrlhlQzXDhokGfYV4rxH2Zst99Y1gA8t9eS8n7140vbTwLTGyfl0raDy-Lm758dBYcco-NbDX4tlJ5oSP7kfEvYWW8PsB97vymVT2Tx7i7u8A9Jrw9y8u0YOiQ2L5pHEao3Vp4qtj8wiaZJBpZxRMaP9zuGmXC2vPo0GP537mgu03zpfKS5XH79ecW6Pcq7MhWdkBv6EYTDvywBDfnztPWMGz2Ug8pLkOeXDTNiqV_wosF4');
+                                    "
+                                ></div>
+                            </div>
+                            <p class="text-sm font-medium text-[#617589] dark:text-gray-400">Trusted by 500+ facility managers worldwide</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div
+                            class="aspect-[4/3] w-full rounded-3xl bg-cover bg-center shadow-2xl"
+                            data-alt="3D illustration of a structured parking garage with diverse vehicle types"
+                            style="
+                                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXyAP5LPUZ7gmWaTrFlk6iy8qp_Omzn36Rdom1X8uZAN1KYM0ykOe4SJrcPrCsEPaKlE5omaBk1nWwnY6m1kNK9W6A3oBD4hhFGZyis1_qFw5eiYn3TV3TSIpoMTgwTIXT5Rih6pxXZ41tS1yr_uFiufp_TjiDo0_bWQxX_hbDr2-KV29udhyUCvKd30OAxa70Y6OHjPQG8pEpdJyshzHllciTA5QE_8LvVvI_maiK3n-TKu961uFCj9mEX4UsE8zLxKykI-77fQI');
+                            "
+                        ></div>
+                        <div
+                            class="absolute -bottom-6 -left-6 hidden rounded-2xl border border-[#dbe0e6] bg-white p-6 shadow-xl sm:block dark:border-gray-700 dark:bg-gray-800"
+                        >
+                            <div class="flex items-center gap-4">
+                                <div class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    <span class="material-symbols-outlined">analytics</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-[#617589] dark:text-gray-400">Occupancy Rate</p>
+                                    <p class="text-xl font-black text-[#111418] dark:text-white">94.2%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- About Section -->
+            <section class="dark:bg-background-dark bg-white py-20" id="about">
+                <div class="mx-auto max-w-[1280px] px-6">
+                    <div class="mb-16 flex flex-col items-center gap-4 text-center">
+                        <h2 class="max-w-[800px] text-3xl font-black tracking-tight lg:text-4xl">Scalability for High-Traffic Environments</h2>
+                        <p class="max-w-[700px] text-[#617589] dark:text-gray-400">
+                            Our system is built to handle the demanding throughput of large-scale institutions with professional-grade reliability and
+                            real-time data synchronization.
+                        </p>
+                    </div>
+                    <div class="grid gap-8 md:grid-cols-3">
+                        <div
+                            class="bg-background-light flex flex-col gap-4 rounded-2xl border border-[#dbe0e6] p-8 dark:border-gray-800 dark:bg-gray-900/50"
+                        >
+                            <span class="material-symbols-outlined text-4xl text-primary">storefront</span>
+                            <h3 class="text-xl font-bold">Mall Integration</h3>
+                            <p class="text-[#617589] dark:text-gray-400">
+                                Seamlessly manage thousands of shoppers with seasonal traffic peak handling and validated parking support.
+                            </p>
+                        </div>
+                        <div
+                            class="bg-background-light flex flex-col gap-4 rounded-2xl border border-[#dbe0e6] p-8 dark:border-gray-800 dark:bg-gray-900/50"
+                        >
+                            <span class="material-symbols-outlined text-4xl text-primary">emergency</span>
+                            <h3 class="text-xl font-bold">Hospital Ready</h3>
+                            <p class="text-[#617589] dark:text-gray-400">
+                                Critical care access, emergency lane priority, and specialized doctor parking zone management.
+                            </p>
+                        </div>
+                        <div
+                            class="bg-background-light flex flex-col gap-4 rounded-2xl border border-[#dbe0e6] p-8 dark:border-gray-800 dark:bg-gray-900/50"
+                        >
+                            <span class="material-symbols-outlined text-4xl text-primary">trending_up</span>
+                            <h3 class="text-xl font-bold">High Throughput</h3>
+                            <p class="text-[#617589] dark:text-gray-400">
+                                Optimized for peak hour vehicle flow with sub-second plate recognition and barrier response times.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- How It Works Section -->
+            <section class="bg-background-light dark:bg-background-dark py-20" id="how-it-works">
+                <div class="mx-auto max-w-[1280px] px-6">
+                    <div class="mb-16">
+                        <h2 class="mb-4 text-3xl font-black">How it works</h2>
+                        <div class="h-1.5 w-20 rounded-full bg-primary"></div>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+                        <div
+                            class="flex flex-col items-start gap-4 rounded-2xl border border-[#dbe0e6] bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+                        >
+                            <div class="flex size-12 items-center justify-center rounded-full bg-primary font-bold text-white">1</div>
+                            <span class="material-symbols-outlined text-3xl text-primary">qr_code_scanner</span>
+                            <div>
+                                <h4 class="text-lg font-bold">Vehicle Entry</h4>
+                                <p class="mt-1 text-sm text-[#617589] dark:text-gray-400">Rapid identification through AI-powered scanners.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col items-start gap-4 rounded-2xl border border-[#dbe0e6] bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+                        >
+                            <div class="flex size-12 items-center justify-center rounded-full bg-primary font-bold text-white">2</div>
+                            <span class="material-symbols-outlined text-3xl text-primary">location_on</span>
+                            <div>
+                                <h4 class="text-lg font-bold">Smart Allocation</h4>
+                                <p class="mt-1 text-sm text-[#617589] dark:text-gray-400">AI-driven spot assignment based on vehicle size.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col items-start gap-4 rounded-2xl border border-[#dbe0e6] bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+                        >
+                            <div class="flex size-12 items-center justify-center rounded-full bg-primary font-bold text-white">3</div>
+                            <span class="material-symbols-outlined text-3xl text-primary">dashboard</span>
+                            <div>
+                                <h4 class="text-lg font-bold">Real-time Monitoring</h4>
+                                <p class="mt-1 text-sm text-[#617589] dark:text-gray-400">Live operator view of every level and gate.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col items-start gap-4 rounded-2xl border border-[#dbe0e6] bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+                        >
+                            <div class="flex size-12 items-center justify-center rounded-full bg-primary font-bold text-white">4</div>
+                            <span class="material-symbols-outlined text-3xl text-primary">check_circle</span>
+                            <div>
+                                <h4 class="text-lg font-bold">Secure Exit</h4>
+                                <p class="mt-1 text-sm text-[#617589] dark:text-gray-400">Automated payment and seamless gate release.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Features Grid -->
+            <section class="dark:bg-background-dark bg-white py-20" id="features">
+                <div class="mx-auto max-w-[1280px] px-6">
+                    <div class="mb-16 text-center">
+                        <h2 class="mb-4 text-3xl font-black">Core Technical Capabilities</h2>
+                        <p class="text-[#617589] dark:text-gray-400">Advanced features built for the next generation of parking facilities.</p>
+                    </div>
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                        <div class="group flex flex-col gap-4">
+                            <div
+                                class="aspect-square w-full overflow-hidden rounded-2xl bg-cover bg-center shadow-md transition-transform group-hover:scale-[1.03]"
+                                data-alt="Modern cars parked in an organized underground facility"
+                                style="
+                                    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBMEDBbsE1X7NQlaZIXc-ExHOj6HefizlovCrnnrTzU5dNIXSgvzJ97jLsbfeFNQjSPIQ2FppbcF3tiTSmZlrv1lBKxzlyOrwUOwgPTY6KVOAwmcQIuR0h0FSaqtca4BINYgvKGsj_6cKxPMjTZqUyDzyr2IUIgUCM8pJ7MGKYQoeMSbHvBzLZjsJwdNUJ0in9WqkCadIQk65j3efeP9LNSJ5t3_rj8Vl5x5m6xICB2XyZLrIy3Efru5wMRVkR4hWHToLYWP7dDxcM');
+                                "
+                            ></div>
+                            <div>
+                                <p class="text-lg font-bold">Multi-Vehicle Support</p>
+                                <p class="text-sm text-[#617589] dark:text-gray-400">Dedicated tracking for cars, motorcycles, and heavy trucks.</p>
+                            </div>
+                        </div>
+                        <div class="group flex flex-col gap-4">
+                            <div
+                                class="aspect-square w-full overflow-hidden rounded-2xl bg-cover bg-center shadow-md transition-transform group-hover:scale-[1.03]"
+                                data-alt="Abstract blue digital network sensors representing live data tracking"
+                                style="
+                                    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQx2risxFURGm7fHcMPEo2DJPFMqyLBfkfhXepTBXb5Qt9yP8obJxusskDk3MZrefWVvsfWcL2c9wvkjlUuRJXK0WmFGPJlYXaIhGU1PDkmb3ryhNy62ZGwN4jThrsmoVq8tUMXViFHAfTG1ezi0QCTwTQ2tuqosc_GCZtr2IMuhFKgPSPCvt7n2PHnFPc4oZurc1XTkvlDykEJKhf2WsyRJOOeSH8yzktBakFDnPukT8r1uJC56mAs1SaKgAvteQChF3HKSkOWqI');
+                                "
+                            ></div>
+                            <div>
+                                <p class="text-lg font-bold">Live Space Tracking</p>
+                                <p class="text-sm text-[#617589] dark:text-gray-400">Real-time occupancy sensor data with precise heatmaps.</p>
+                            </div>
+                        </div>
+                        <div class="group flex flex-col gap-4">
+                            <div
+                                class="aspect-square w-full overflow-hidden rounded-2xl bg-cover bg-center shadow-md transition-transform group-hover:scale-[1.03]"
+                                data-alt="Security camera lens focusing on a parking entrance"
+                                style="
+                                    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDzr2wiysLqzMJYcMCnU5M3RhgGBYH3PhrTqI_bh8JcN2wPHXdho4G4xgk_O51wx1W5kKzI7u5Jd-fmHTfiVtxn52nD7XB3dLKCSBSV84qMbnjl3jM4-gBWw_QD8c8k9RcDrr5gZ5GhGcFX8z832gOPqYWK3kYOE37TJxeTmFAS_6wh4kc_Fi4xz7hHyWgZ69FhWOh5FWZej0Sw7mPRCCbM5cAadgZPpSzstgyysuzzfPepTh9aeuZ2ntJ0K5ELVwFVN5B6v-g3tJ4');
+                                "
+                            ></div>
+                            <div>
+                                <p class="text-lg font-bold">Automated Security</p>
+                                <p class="text-sm text-[#617589] dark:text-gray-400">AI-driven surveillance and automated gate response systems.</p>
+                            </div>
+                        </div>
+                        <div class="group flex flex-col gap-4">
+                            <div
+                                class="aspect-square w-full overflow-hidden rounded-2xl bg-cover bg-center shadow-md transition-transform group-hover:scale-[1.03]"
+                                data-alt="Digital dashboard displaying analytics and charts"
+                                style="
+                                    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD6l_NffVPFnkYY4OtsY3hV0B1bIYTBu8bes_bL_rgl4f6_f81jOFw01N06PTrPo6JGW3oFsybYMLlmVb_KjBV5uo-1Qy0MVmBbuLXTj3gM3H9WfUSaaVWysUcQqO8HPspYSsB0CqVu2qMrrJBZ_p8YjaQ6B53U5PmxyEj3OfTS-_D25gPPL5nuIwzcPzocFn0ONm1qmc5T8ucA6XtnQLykAYbofvqN7FCsXgma4D0e6jMNNHKmyEtbTf-U2i7TLihcbRojww0zYyg');
+                                "
+                            ></div>
+                            <div>
+                                <p class="text-lg font-bold">Analytics Dashboard</p>
+                                <p class="text-sm text-[#617589] dark:text-gray-400">In-depth facility performance and revenue generation data.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- CTA Banner -->
+            <section class="mx-auto max-w-[1280px] px-6 py-12">
+                <div
+                    class="relative flex flex-col items-center justify-between gap-10 overflow-hidden rounded-[2rem] bg-primary p-8 md:flex-row md:p-16"
+                >
+                    <div class="absolute top-0 right-0 -mt-32 -mr-32 h-64 w-64 rounded-full bg-white/10"></div>
+                    <div class="absolute bottom-0 left-0 -mb-16 -ml-16 h-32 w-32 rounded-full bg-white/5"></div>
+                    <div class="relative z-10 flex flex-col gap-4 text-center md:text-left">
+                        <h2 class="text-3xl leading-tight font-black text-white md:text-5xl">Ready to optimize your<br />parking space?</h2>
+                        <p class="text-lg text-white/80">Join 500+ facilities that have already upgraded to ParkFlow.</p>
+                    </div>
+                    <div class="relative z-10 flex flex-wrap justify-center gap-4">
+                        <button class="hover:bg-opacity-90 rounded-xl bg-white px-8 py-5 text-lg font-black text-primary transition-all">
+                            Start Free Trial
+                        </button>
+                        <button
+                            class="rounded-xl border-2 border-white bg-transparent px-8 py-5 text-lg font-black text-white transition-all hover:bg-white/10"
+                        >
+                            Contact Sales
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- Footer -->
+        <footer class="dark:bg-background-dark border-t border-[#dbe0e6] bg-white pt-16 pb-8 dark:border-gray-800">
+            <div class="mx-auto max-w-[1280px] px-6">
+                <div class="mb-16 grid grid-cols-1 gap-12 md:grid-cols-4">
+                    <div class="flex flex-col gap-6">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-3xl text-primary">local_parking</span>
+                            <h2 class="text-xl font-black tracking-tight">ParkFlow</h2>
+                        </div>
+                        <p class="text-sm leading-relaxed text-[#617589] dark:text-gray-400">
+                            The next generation of integrated parking management systems for the world's largest facilities.
+                        </p>
+                        <div class="flex gap-4">
+                            <a
+                                class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#f0f2f4] text-[#111418] transition-colors hover:text-primary dark:bg-gray-800 dark:text-white"
+                                href="#"
+                            >
+                                <span class="material-symbols-outlined text-xl">language</span>
+                            </a>
+                            <a
+                                class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#f0f2f4] text-[#111418] transition-colors hover:text-primary dark:bg-gray-800 dark:text-white"
+                                href="#"
+                            >
+                                <span class="material-symbols-outlined text-xl">share</span>
+                            </a>
+                            <a
+                                class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#f0f2f4] text-[#111418] transition-colors hover:text-primary dark:bg-gray-800 dark:text-white"
+                                href="#"
+                            >
+                                <span class="material-symbols-outlined text-xl">alternate_email</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <h4 class="font-bold">Product</h4>
+                        <nav class="flex flex-col gap-2">
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">LPR Scanning</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Payment Gates</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Mobile App</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">API Integration</a>
+                        </nav>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <h4 class="font-bold">Industry</h4>
+                        <nav class="flex flex-col gap-2">
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Hospitals</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Shopping Malls</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Airports</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Corporate Offices</a>
+                        </nav>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <h4 class="font-bold">Company</h4>
+                        <nav class="flex flex-col gap-2">
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">About Us</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Careers</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Support</a>
+                            <a class="text-sm text-[#617589] hover:text-primary dark:text-gray-400" href="#">Legal &amp; Privacy</a>
+                        </nav>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center justify-between gap-4 border-t border-[#dbe0e6] pt-8 md:flex-row dark:border-gray-800">
+                    <p class="text-xs text-[#617589] dark:text-gray-500">© 2024 ParkFlow Technologies Inc. All rights reserved.</p>
+                    <div class="flex gap-6">
+                        <a class="text-xs text-[#617589] transition-colors hover:text-primary dark:text-gray-500" href="#">Privacy Policy</a>
+                        <a class="text-xs text-[#617589] transition-colors hover:text-primary dark:text-gray-500" href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
