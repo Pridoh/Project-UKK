@@ -46,6 +46,16 @@ class AuthService
             ]);
         }
 
+        // Check if user is active
+        $user = Auth::user();
+        if ($user && !$user->is_active) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Your account is not active yet. Please wait for admin approval or contact the administrator.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey($request));
     }
 
@@ -79,6 +89,9 @@ class AuthService
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        // Clear intended URL to prevent redirect to previous page after re-login
+        $request->session()->forget('url.intended');
     }
 
     /**
