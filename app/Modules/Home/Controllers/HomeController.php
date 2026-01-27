@@ -17,7 +17,7 @@ class HomeController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('welcome');
+        return Inertia::render('auth/login');
     }
 }
 
