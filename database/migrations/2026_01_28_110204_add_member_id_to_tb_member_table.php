@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tb_vehicle_type', function (Blueprint $table) {
-            $table->uuid('id', 36)->primary();
-            $table->string('kode')->unique();
-            $table->string('nama_tipe');
-            $table->text('deskripsi')->nullable();
+        Schema::table('tb_member', function (Blueprint $table) {
+            $table->string('member_id')->unique()->after('id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tb_vehicle_type');
+        Schema::table('tb_member', function (Blueprint $table) {
+            $table->dropColumn('member_id');
+        });
     }
 };
