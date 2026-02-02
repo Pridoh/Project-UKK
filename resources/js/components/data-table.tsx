@@ -6,7 +6,6 @@ import {
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
     type ColumnDef,
@@ -14,12 +13,12 @@ import {
     type SortingState,
     type VisibilityState,
 } from '@tanstack/react-table';
-import { MoreHorizontal, Plus, Search } from 'lucide-react';
+import { Loader2, MoreHorizontal, Plus, Search } from 'lucide-react';
 import * as React from 'react';
 
-interface Column<TData> {
+export interface Column<TData> {
     key: string;
-    header: string;
+    header: string | React.ReactNode;
     render?: (row: TData, index: number) => React.ReactNode;
 }
 
@@ -34,9 +33,12 @@ interface DataTableProps<TData> {
     searchable?: boolean;
     searchPlaceholder?: string;
     onFilteredCountChange?: (count: number) => void;
+    onSearch?: (term: string) => void;
+    searchTerm?: string;
+    loading?: boolean;
 }
 
-export function DataTable<TData extends Record<string, unknown>>({
+export function DataTable<TData>({
     data,
     columns,
     onCreate,
@@ -47,33 +49,36 @@ export function DataTable<TData extends Record<string, unknown>>({
     searchable = false,
     searchPlaceholder = 'Search...',
     onFilteredCountChange,
+    onSearch,
+    searchTerm,
+    loading = false,
 }: DataTableProps<TData>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [globalFilter, setGlobalFilter] = React.useState('');
 
+    // If onSearch is provided, we assume manual filtering (server-side)
+
     // Convert custom columns to TanStack columns
-    const tableColumns: ColumnDef<TData>[] = React.useMemo(
-        () => [
-            ...columns.map((col) => ({
-                accessorKey: col.key,
-                header: col.header,
-                cell: ({ row }: any) => {
-                    if (col.render) {
-                        return col.render(row.original as TData, row.index);
-                    }
-                    return row.getValue(col.key);
-                },
-            })),
-            // Actions column
-            {
+    const tableColumns: ColumnDef<TData>[] = React.useMemo(() => {
+        const cols: ColumnDef<TData>[] = columns.map((col) => ({
+            accessorKey: col.key,
+            header: typeof col.header === 'string' ? col.header : () => col.header,
+            cell: ({ row }: any) => {
+                if (col.render) {
+                    return col.render(row.original as TData, row.index);
+                }
+                return row.getValue(col.key);
+            },
+        }));
+
+        // Only add actions column if action handlers are provided
+        if (onEdit || onShow || onDelete) {
+            cols.push({
                 id: 'actions',
                 header: 'Actions',
                 cell: ({ row }) => {
-                    const hasActions = onEdit || onShow || onDelete;
-                    if (!hasActions) return null;
-
                     return (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -94,10 +99,11 @@ export function DataTable<TData extends Record<string, unknown>>({
                         </DropdownMenu>
                     );
                 },
-            },
-        ],
-        [columns, onEdit, onShow, onDelete],
-    );
+            });
+        }
+
+        return cols;
+    }, [columns, onEdit, onShow, onDelete]);
 
     const table = useReactTable({
         data,
@@ -105,11 +111,11 @@ export function DataTable<TData extends Record<string, unknown>>({
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onGlobalFilterChange: setGlobalFilter,
+        manualFiltering: !!onSearch, // Disable client-side filtering if onSearch is provided
         state: {
             sorting,
             columnFilters,
@@ -134,8 +140,14 @@ export function DataTable<TData extends Record<string, unknown>>({
                         <Search className="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground" />
                         <Input
                             placeholder={searchPlaceholder}
-                            value={globalFilter ?? ''}
-                            onChange={(event) => setGlobalFilter(event.target.value)}
+                            value={onSearch ? (searchTerm ?? '') : (globalFilter ?? '')}
+                            onChange={(event) => {
+                                if (onSearch) {
+                                    onSearch(event.target.value);
+                                } else {
+                                    setGlobalFilter(event.target.value);
+                                }
+                            }}
                             className="pl-8"
                         />
                     </div>
@@ -162,7 +174,16 @@ export function DataTable<TData extends Record<string, unknown>>({
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={tableColumns.length} className="h-24 text-center">
+                                    <div className="flex items-center justify-center">
+                                        <Loader2 className="mr-2 h-6 w-6 animate-spin text-primary" />
+                                        <span className="text-muted-foreground">Loading data...</span>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ) : table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                                     {row.getVisibleCells().map((cell) => (
