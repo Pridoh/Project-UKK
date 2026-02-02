@@ -17,11 +17,17 @@ class TarifParkirService
     /**
      * Get all tariffs with pagination and vehicle type relationship
      */
-    public function getAllTariffs(int $perPage = 10): LengthAwarePaginator
+    public function getAllTariffs(int $perPage = 10, ?string $search = null): LengthAwarePaginator
     {
-        return TarifParkir::with('vehicleType')
-            ->latest()
-            ->paginate($perPage);
+        $query = TarifParkir::with('vehicleType')->latest();
+
+        if ($search) {
+            $query->whereHas('vehicleType', function ($q) use ($search) {
+                $q->where('nama_tipe', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**

@@ -3,7 +3,7 @@
 use App\Modules\Areaparkir\Controllers\AreaParkirController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'verified'])->controller(AreaParkirController::class)->prefix('areaparkir')->name('areaparkir.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:Admin'])->controller(AreaParkirController::class)->prefix('areaparkir')->name('areaparkir.')->group(function () {
     Route::get('/', 'index')->name('index');
     Route::get('/create', 'create')->name('create');
     Route::post('/', 'store')->name('store');

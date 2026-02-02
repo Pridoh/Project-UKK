@@ -29,11 +29,15 @@ class VehicleTypeController extends Controller
     public function index(Request $request): Response
     {
         $perPage = $request->integer('per_page', 10);
+        $search = $request->input('search');
 
-        $vehicleTypes = $this->vehicleTypeService->getAllVehicleTypes($perPage);
+        $vehicleTypes = $this->vehicleTypeService->getAllVehicleTypes($perPage, $search);
 
         return Inertia::render('vehicletype/index', [
             'vehicleTypes' => $vehicleTypes,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

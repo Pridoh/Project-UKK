@@ -2,10 +2,11 @@
 
 namespace App\Modules\Areaparkir\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Modules\Tarifparkir\Models\TarifParkir;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class VehicleType extends Model
 {
@@ -36,8 +37,9 @@ class VehicleType extends Model
         'id',
         'kode',
         'nama_tipe',
-        'ukuran_slot',
-        'tarif_dasar',
+        'deskripsi',
+        // 'ukuran_slot', // Removed: slot size is managed in parking area menu
+        // 'tarif_dasar', // Removed: tariffs are now managed in tarif menu
     ];
 
     /**
@@ -53,6 +55,6 @@ class VehicleType extends Model
      */
     public function tariffs(): HasMany
     {
-        return $this->hasMany(\App\Modules\Tarifparkir\Models\TarifParkir::class, 'vehicle_type_id', 'id');
+        return $this->hasMany(TarifParkir::class, 'vehicle_type_id', 'id');
     }
 }

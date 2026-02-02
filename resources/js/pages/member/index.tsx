@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -43,6 +43,7 @@ type Vehicle = {
 
 type Member = {
     id: string;
+    member_id: string;
     vehicle_id: string;
     nama: string;
     tipe_member: number;
@@ -78,6 +79,9 @@ type Props = {
     vehicles: Vehicle[];
     memberTypes: MemberTypes;
     memberPackages: MemberPackages;
+    filters: {
+        search?: string;
+    };
 };
 
 type FlashMessages = {
@@ -120,7 +124,7 @@ const isMembershipActive = (endDate: string): boolean => {
     return expiry >= today;
 };
 
-export default function MemberIndex({ members, vehicles, memberTypes, memberPackages }: Props) {
+export default function MemberIndex({ members, vehicles, memberTypes, memberPackages, filters }: Props) {
     const { flash } = usePage<SharedData>().props;
     const flashMessages = flash as FlashMessages;
     const [showSuccessDialog, setShowSuccessDialog] = useState(!!flashMessages?.success);
@@ -128,6 +132,39 @@ export default function MemberIndex({ members, vehicles, memberTypes, memberPack
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [editingMember, setEditingMember] = useState<Member | null>(null);
     const [deletingMember, setDeletingMember] = useState<Member | null>(null);
+
+    const [searchTerm, setSearchTerm] = useState(filters?.search || '');
+    const [isLoading, setIsLoading] = useState(false);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const performSearch = (term: string) => {
+        setIsLoading(true);
+        router.visit(
+            route('member.index', {
+                page: 1,
+                per_page: members.per_page,
+                search: term,
+            }),
+            {
+                preserveScroll: true,
+                preserveState: true,
+                replace: true,
+                onFinish: () => setIsLoading(false),
+            },
+        );
+    };
+
+    const onSearchChange = (term: string) => {
+        setSearchTerm(term);
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            performSearch(term);
+        }, 300);
+    };
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         vehicle_id: '',
@@ -138,6 +175,11 @@ export default function MemberIndex({ members, vehicles, memberTypes, memberPack
     });
 
     const columns = [
+        {
+            key: 'member_id',
+            header: 'Member ID',
+            render: (row: Member) => <span className="font-medium">{row.member_id || '-'}</span>,
+        },
         {
             key: 'nama',
             header: 'Nama Member',
@@ -242,14 +284,17 @@ export default function MemberIndex({ members, vehicles, memberTypes, memberPack
     const handlePageChange = (page: number) => {
         if (page < 1 || page > members.last_page || page === members.current_page) return;
 
+        setIsLoading(true);
         router.visit(
             route('member.index', {
                 page,
                 per_page: members.per_page,
+                search: searchTerm,
             }),
             {
                 preserveScroll: true,
                 preserveState: true,
+                onFinish: () => setIsLoading(false),
             },
         );
     };
@@ -257,14 +302,17 @@ export default function MemberIndex({ members, vehicles, memberTypes, memberPack
     const handlePerPageChange = (perPage: number) => {
         if (!perPage || perPage === members.per_page) return;
 
+        setIsLoading(true);
         router.visit(
             route('member.index', {
                 page: 1,
                 per_page: perPage,
+                search: searchTerm,
             }),
             {
                 preserveScroll: true,
                 preserveState: true,
+                onFinish: () => setIsLoading(false),
             },
         );
     };
@@ -299,6 +347,9 @@ export default function MemberIndex({ members, vehicles, memberTypes, memberPack
                         createLabel="Create Member"
                         searchable
                         searchPlaceholder="Search members..."
+                        onSearch={onSearchChange}
+                        searchTerm={searchTerm}
+                        loading={isLoading}
                     />
 
                     <TablePagination
@@ -359,7 +410,17 @@ export default function MemberIndex({ members, vehicles, memberTypes, memberPack
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
                                 <Label htmlFor="vehicle_id">Kendaraan</Label>
-                                <Select value={data.vehicle_id} onValueChange={(value) => setData('vehicle_id', value)}>
+                                <Select
+                                    value={data.vehicle_id}
+                                    onValueChange={(value) => {
+                                        setData('vehicle_id', value);
+                                        // Auto-fill nama member from vehicle's nama_pemilik if available
+                                        const selectedVehicle = vehicles.find((v) => v.id === value);
+                                        if (selectedVehicle?.nama_pemilik) {
+                                            setData('nama', selectedVehicle.nama_pemilik);
+                                        }
+                                    }}
+                                >
                                     <SelectTrigger className={errors.vehicle_id ? 'border-red-500' : ''}>
                                         <SelectValue placeholder="Pilih kendaraan" />
                                     </SelectTrigger>
@@ -385,6 +446,11 @@ export default function MemberIndex({ members, vehicles, memberTypes, memberPack
                                     className={errors.nama ? 'border-red-500' : ''}
                                 />
                                 {errors.nama && <p className="text-sm text-red-500">{errors.nama}</p>}
+                                {data.vehicle_id && vehicles.find((v) => v.id === data.vehicle_id)?.nama_pemilik && (
+                                    <p className="text-xs text-muted-foreground">
+                                        Auto-filled from vehicle owner: {vehicles.find((v) => v.id === data.vehicle_id)?.nama_pemilik}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="grid gap-2">

@@ -28,13 +28,17 @@ class AreaParkirController extends Controller
     public function index(Request $request): Response
     {
         $perPage = $request->integer('per_page', 10);
+        $search = $request->input('search');
 
-        $areas = $this->areaParkirService->getAllAreas($perPage);
+        $areas = $this->areaParkirService->getAllAreas($perPage, $search);
         $vehicleTypes = $this->areaParkirService->getAllVehicleTypes();
 
         return Inertia::render('areaparkir/index', [
             'areas' => $areas,
             'vehicleTypes' => $vehicleTypes,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

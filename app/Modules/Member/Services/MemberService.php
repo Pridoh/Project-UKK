@@ -88,6 +88,7 @@ class MemberService
     public function createMember(array $data): Member
     {
         $data['id'] = Str::uuid();
+        $data['member_id'] = $this->generateMemberId();
 
         // Auto-set start_date to today
         $data['start_date'] = now()->toDateString();
@@ -210,5 +211,26 @@ class MemberService
             6 => 'Semi-Annual (6 Months)',
             12 => 'Yearly (1 Year)',
         ]);
+    }
+    /**
+     * Generate unique member ID with format: NOURUT-DDMMYY
+     */
+    private function generateMemberId(): string
+    {
+        $today = now();
+        $dateSuffix = $today->format('dmy');
+
+        // Find the last member ID created today
+        $lastMember = Member::where('member_id', 'LIKE', '%-' . $dateSuffix)
+            ->withTrashed()
+            ->orderBy('member_id', 'desc')
+            ->first();
+
+        $sequence = 1;
+        if ($lastMember && preg_match('/^(\d+)-/', $lastMember->member_id, $matches)) {
+            $sequence = intval($matches[1]) + 1;
+        }
+
+        return str_pad((string) $sequence, 3, '0', STR_PAD_LEFT) . '-' . $dateSuffix;
     }
 }

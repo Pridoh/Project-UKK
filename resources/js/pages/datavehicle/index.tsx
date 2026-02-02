@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -73,6 +73,39 @@ export default function DataVehicleIndex({ vehicles, vehicleTypes, filters }: Pr
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
     const [deletingVehicle, setDeletingVehicle] = useState<Vehicle | null>(null);
+
+    const [searchTerm, setSearchTerm] = useState(filters?.search || '');
+    const [isLoading, setIsLoading] = useState(false);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const performSearch = (term: string) => {
+        setIsLoading(true);
+        router.visit(
+            route('datavehicle.index', {
+                page: 1,
+                per_page: vehicles.per_page,
+                search: term,
+            }),
+            {
+                preserveScroll: true,
+                preserveState: true,
+                replace: true,
+                onFinish: () => setIsLoading(false),
+            },
+        );
+    };
+
+    const onSearchChange = (term: string) => {
+        setSearchTerm(term);
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            performSearch(term);
+        }, 300);
+    };
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         plat_nomor: '',
@@ -171,15 +204,17 @@ export default function DataVehicleIndex({ vehicles, vehicleTypes, filters }: Pr
     const handlePageChange = (page: number) => {
         if (page < 1 || page > vehicles.last_page || page === vehicles.current_page) return;
 
+        setIsLoading(true);
         router.visit(
             route('datavehicle.index', {
                 page,
                 per_page: vehicles.per_page,
-                search: filters.search,
+                search: searchTerm,
             }),
             {
                 preserveScroll: true,
                 preserveState: true,
+                onFinish: () => setIsLoading(false),
             },
         );
     };
@@ -187,15 +222,17 @@ export default function DataVehicleIndex({ vehicles, vehicleTypes, filters }: Pr
     const handlePerPageChange = (perPage: number) => {
         if (!perPage || perPage === vehicles.per_page) return;
 
+        setIsLoading(true);
         router.visit(
             route('datavehicle.index', {
                 page: 1,
                 per_page: perPage,
-                search: filters.search,
+                search: searchTerm,
             }),
             {
                 preserveScroll: true,
                 preserveState: true,
+                onFinish: () => setIsLoading(false),
             },
         );
     };
@@ -220,6 +257,9 @@ export default function DataVehicleIndex({ vehicles, vehicleTypes, filters }: Pr
                         createLabel="Create Vehicle"
                         searchable
                         searchPlaceholder="Search vehicles..."
+                        onSearch={onSearchChange}
+                        searchTerm={searchTerm}
+                        loading={isLoading}
                     />
 
                     <TablePagination

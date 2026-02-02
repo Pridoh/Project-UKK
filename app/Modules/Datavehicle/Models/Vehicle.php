@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Vehicle extends Model
@@ -66,6 +67,17 @@ class Vehicle extends Model
     public function members(): HasMany
     {
         return $this->hasMany(Member::class, 'vehicle_id', 'id');
+    }
+
+    /**
+     * Relationship: Get the active member for this vehicle (singular)
+     */
+    public function member()
+    {
+        return $this->hasOne(Member::class, 'vehicle_id', 'id')
+            ->where('end_date', '>=', now()->toDateString())
+            ->where('start_date', '<=', now()->toDateString())
+            ->latest('end_date');
     }
 
     /**
