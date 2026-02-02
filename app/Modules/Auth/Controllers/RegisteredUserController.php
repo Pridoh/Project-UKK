@@ -45,6 +45,7 @@ class RegisteredUserController extends Controller
 
         $this->authService->register($request);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->route('login')
+            ->with('status', 'Registration successful. Please wait for admin activation.');
     }
 }

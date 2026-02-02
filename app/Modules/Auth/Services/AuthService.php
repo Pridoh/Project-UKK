@@ -70,12 +70,12 @@ class AuthService
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'is_active' => 1, //temporary value, will be change later
+            'is_active' => 0, // Set to inactive by default, waiting for admin approval
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Auth::login($user); // Disable auto login for inactive users
 
         return $user;
     }
