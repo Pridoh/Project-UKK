@@ -14,14 +14,19 @@ use Illuminate\Validation\ValidationException;
  */
 class UserService
 {
-    /**
-     * Get all users with pagination and filters
-     */
-    public function getAllUsers(int $perPage = 10): LengthAwarePaginator
+    public function getAllUsers(int $perPage = 10, ?string $search = null): LengthAwarePaginator
     {
-        return User::with('role')
-            ->latest()
-            ->paginate($perPage);
+        $query = User::with('role')->latest();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**
