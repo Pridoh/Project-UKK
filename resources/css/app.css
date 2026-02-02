@@ -8,8 +8,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --font-sans: "Poppins", ui-sans-serif, sans-serif, system-ui;
-        /* 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; */
+    --font-sans: 'Poppins', ui-sans-serif, sans-serif, system-ui;
+    /* 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; */
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -106,7 +106,7 @@
     /* Status */
     --destructive: oklch(0.62 0.22 25);
     --success: oklch(0.93 0.04 145); /* #e8f5e9 */
-    --info: oklch(0.92 0.04 250);    /* #e3f2fd */
+    --info: oklch(0.92 0.04 250); /* #e3f2fd */
 
     /* UI */
     --border: oklch(0.88 0.01 255);
@@ -130,7 +130,7 @@
     --sidebar-border: oklch(0.88 0.01 255);
     --sidebar-ring: oklch(0.58 0.19 255);
 
-    --font-sans: "Poppins", ui-sans-serif, sans-serif, system-ui;
+    --font-sans: 'Poppins', ui-sans-serif, sans-serif, system-ui;
     --font-serif: Georgia, serif;
     --font-mono: JetBrains Mono, ui-monospace, monospace;
 
@@ -186,7 +186,7 @@
     --sidebar-border: oklch(0.95 0.01 255 / 12%);
     --sidebar-ring: oklch(0.65 0.2 255);
 
-    --font-sans: "Poppins", ui-sans-serif, sans-serif, system-ui;
+    --font-sans: 'Poppins', ui-sans-serif, sans-serif, system-ui;
     --font-serif: Georgia, serif;
     --font-mono: JetBrains Mono, ui-monospace, monospace;
 
@@ -260,4 +260,21 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+/* Custom animations for error pages */
+@keyframes float {
+    0% {
+        transform: translateY(0px) rotate(-6deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(-6deg);
+    }
+    100% {
+        transform: translateY(0px) rotate(-6deg);
+    }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
 }

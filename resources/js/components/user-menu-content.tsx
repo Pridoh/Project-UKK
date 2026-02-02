@@ -1,9 +1,11 @@
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type User } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
+import { useState } from 'react';
 
 interface UserMenuContentProps {
     user: User;
@@ -11,10 +13,17 @@ interface UserMenuContentProps {
 
 export function UserMenuContent({ user }: UserMenuContentProps) {
     const cleanup = useMobileNavigation();
+    const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
-    const handleLogout = () => {
+    const handleLogoutClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setShowLogoutDialog(true);
+    };
+
+    const handleLogoutConfirm = () => {
         cleanup();
         router.flushAll();
+        router.post(route('logout'));
     };
 
     return (
@@ -35,11 +44,22 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                <Link className="block w-full" method="post" href={route('logout')} as="button" onClick={handleLogout}>
+                <button className="flex w-full items-center" onClick={handleLogoutClick}>
                     <LogOut className="mr-2" />
                     Log out
-                </Link>
+                </button>
             </DropdownMenuItem>
+
+            {/* Logout Confirmation Dialog */}
+            <ConfirmDialog
+                open={showLogoutDialog}
+                onOpenChange={setShowLogoutDialog}
+                title="Confirm Logout"
+                message="Are you sure you want to logout?"
+                onConfirm={handleLogoutConfirm}
+                confirmLabel="Logout"
+                cancelLabel="Cancel"
+            />
         </>
     );
 }
