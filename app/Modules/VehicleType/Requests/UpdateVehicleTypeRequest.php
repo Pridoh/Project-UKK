@@ -29,10 +29,11 @@ class UpdateVehicleTypeRequest extends FormRequest
         }
 
         return [
-            'kode' => 'required|string|max:255|unique:tb_vehicle_type,kode,' . $vehicleTypeId . ',id',
+            'kode' => 'required|string|max:255|unique:tb_vehicle_type,kode,' . $vehicleTypeId . ',id', // Auto-generated
             'nama_tipe' => 'required|string|max:255',
-            'ukuran_slot' => 'required|integer|min:1',
-            'tarif_dasar' => 'required|integer|min:0',
+            'deskripsi' => 'nullable|string|max:500',
+            // 'ukuran_slot' => 'required|integer|min:1', // Managed in parking area menu
+            // 'tarif_dasar' => 'required|integer|min:0', // Managed in tarif menu
         ];
     }
 
@@ -44,10 +45,11 @@ class UpdateVehicleTypeRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'kode' => 'vehicle code',
+            'kode' => 'vehicle code', // Auto-generated
             'nama_tipe' => 'vehicle type name',
-            'ukuran_slot' => 'slot size',
-            'tarif_dasar' => 'base rate',
+            'deskripsi' => 'vehicle type description',
+            // 'ukuran_slot' => 'slot size', // Managed in parking area menu
+            // 'tarif_dasar' => 'base rate', // Managed in tarif menu
         ];
     }
 }

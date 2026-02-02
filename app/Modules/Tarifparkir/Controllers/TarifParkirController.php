@@ -29,13 +29,17 @@ class TarifParkirController extends Controller
     public function index(Request $request): Response
     {
         $perPage = $request->integer('per_page', 10);
+        $search = $request->input('search');
 
-        $tariffs = $this->tarifParkirService->getAllTariffs($perPage);
+        $tariffs = $this->tarifParkirService->getAllTariffs($perPage, $search);
         $vehicleTypes = $this->tarifParkirService->getActiveVehicleTypes();
 
         return Inertia::render('tarifparkir/index', [
             'tariffs' => $tariffs,
             'vehicleTypes' => $vehicleTypes,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

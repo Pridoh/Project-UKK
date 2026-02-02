@@ -41,6 +41,9 @@ class MemberController extends Controller
             'vehicles' => $vehicles,
             'memberTypes' => $memberTypes,
             'memberPackages' => $memberPackages,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 

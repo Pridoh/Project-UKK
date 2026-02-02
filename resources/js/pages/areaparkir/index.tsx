@@ -12,7 +12,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -61,6 +61,9 @@ type PaginatedAreas = {
 type Props = {
     areas: PaginatedAreas;
     vehicleTypes: VehicleType[];
+    filters: {
+        search?: string;
+    };
 };
 
 type FlashMessages = {
@@ -73,7 +76,7 @@ type CapacityEntry = {
     kapasitas: number;
 };
 
-export default function AreaParkirIndex({ areas, vehicleTypes }: Props) {
+export default function AreaParkirIndex({ areas, vehicleTypes, filters }: Props) {
     const { flash } = usePage<SharedData>().props;
     const flashMessages = flash as FlashMessages;
     const [showSuccessDialog, setShowSuccessDialog] = useState(!!flashMessages?.success);
@@ -85,6 +88,39 @@ export default function AreaParkirIndex({ areas, vehicleTypes }: Props) {
     const [capacityEntries, setCapacityEntries] = useState<CapacityEntry[]>([]);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const [viewingPhoto, setViewingPhoto] = useState<{ url: string; name: string } | null>(null);
+
+    const [searchTerm, setSearchTerm] = useState(filters?.search || '');
+    const [isLoading, setIsLoading] = useState(false);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const performSearch = (term: string) => {
+        setIsLoading(true);
+        router.visit(
+            route('areaparkir.index', {
+                page: 1,
+                per_page: areas.per_page,
+                search: term,
+            }),
+            {
+                preserveScroll: true,
+                preserveState: true,
+                replace: true,
+                onFinish: () => setIsLoading(false),
+            },
+        );
+    };
+
+    const onSearchChange = (term: string) => {
+        setSearchTerm(term);
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            performSearch(term);
+        }, 300);
+    };
 
     const { data, setData, processing, errors, reset } = useForm({
         kode_area: '',
@@ -244,14 +280,17 @@ export default function AreaParkirIndex({ areas, vehicleTypes }: Props) {
     const handlePageChange = (page: number) => {
         if (page < 1 || page > areas.last_page || page === areas.current_page) return;
 
+        setIsLoading(true);
         router.visit(
             route('areaparkir.index', {
                 page,
                 per_page: areas.per_page,
+                search: searchTerm,
             }),
             {
                 preserveScroll: true,
                 preserveState: true,
+                onFinish: () => setIsLoading(false),
             },
         );
     };
@@ -259,14 +298,17 @@ export default function AreaParkirIndex({ areas, vehicleTypes }: Props) {
     const handlePerPageChange = (perPage: number) => {
         if (!perPage || perPage === areas.per_page) return;
 
+        setIsLoading(true);
         router.visit(
             route('areaparkir.index', {
                 page: 1,
                 per_page: perPage,
+                search: searchTerm,
             }),
             {
                 preserveScroll: true,
                 preserveState: true,
+                onFinish: () => setIsLoading(false),
             },
         );
     };
@@ -365,6 +407,9 @@ export default function AreaParkirIndex({ areas, vehicleTypes }: Props) {
                         createLabel="Create Area"
                         searchable
                         searchPlaceholder="Search areas..."
+                        onSearch={onSearchChange}
+                        searchTerm={searchTerm}
+                        loading={isLoading}
                     />
 
                     <TablePagination
@@ -459,7 +504,7 @@ export default function AreaParkirIndex({ areas, vehicleTypes }: Props) {
                                 {errors.lokasi && <p className="text-sm text-red-500">{errors.lokasi}</p>}
                                 {photoPreview && (
                                     <div className="mt-2">
-                                        <img src={photoPreview} alt="Preview" className="h-32 w-32 rounded object-cover" loading="lazy"/>
+                                        <img src={photoPreview} alt="Preview" className="h-32 w-32 rounded object-cover" loading="lazy" />
                                     </div>
                                 )}
                                 <p className="text-xs text-muted-foreground">Upload an image of the parking area location</p>
@@ -527,7 +572,7 @@ export default function AreaParkirIndex({ areas, vehicleTypes }: Props) {
                                 {photoPreview ? (
                                     <div className="mt-2">
                                         <p className="mb-1 text-xs text-muted-foreground">New photo preview:</p>
-                                        <img src={photoPreview} alt="New preview" className="h-32 w-32 rounded object-cover" loading="lazy"/>
+                                        <img src={photoPreview} alt="New preview" className="h-32 w-32 rounded object-cover" loading="lazy" />
                                     </div>
                                 ) : editingArea?.lokasi ? (
                                     <div className="mt-2">
@@ -567,7 +612,12 @@ export default function AreaParkirIndex({ areas, vehicleTypes }: Props) {
                     </DialogHeader>
                     <div className="flex items-center justify-center p-4">
                         {viewingPhoto && (
-                            <img src={viewingPhoto.url} alt={viewingPhoto.name} className="max-h-[70vh] w-auto rounded-lg object-contain" loading="lazy"/>
+                            <img
+                                src={viewingPhoto.url}
+                                alt={viewingPhoto.name}
+                                className="max-h-[70vh] w-auto rounded-lg object-contain"
+                                loading="lazy"
+                            />
                         )}
                     </div>
                     <DialogFooter>

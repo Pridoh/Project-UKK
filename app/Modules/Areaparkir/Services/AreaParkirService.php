@@ -20,11 +20,18 @@ class AreaParkirService
     /**
      * Get all parking areas with pagination and relationships
      */
-    public function getAllAreas(int $perPage = 10): LengthAwarePaginator
+    public function getAllAreas(int $perPage = 10, ?string $search = null): LengthAwarePaginator
     {
-        return AreaParkir::with(['kapasitasArea.vehicleType'])
-            ->latest()
-            ->paginate($perPage);
+        $query = AreaParkir::with(['kapasitasArea.vehicleType'])->latest();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_area', 'like', "%{$search}%")
+                    ->orWhere('nama_area', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**

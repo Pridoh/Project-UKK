@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -56,6 +56,9 @@ type PaginatedTariffs = {
 type Props = {
     tariffs: PaginatedTariffs;
     vehicleTypes: VehicleType[];
+    filters: {
+        search?: string;
+    };
 };
 
 type FlashMessages = {
@@ -69,7 +72,7 @@ const formatDuration = (minutes: number): string => {
     return hours % 1 === 0 ? `${hours}` : hours.toFixed(1);
 };
 
-export default function TarifParkirIndex({ tariffs, vehicleTypes }: Props) {
+export default function TarifParkirIndex({ tariffs, vehicleTypes, filters }: Props) {
     const { flash } = usePage<SharedData>().props;
     const flashMessages = flash as FlashMessages;
     const [showSuccessDialog, setShowSuccessDialog] = useState(!!flashMessages?.success);
@@ -78,12 +81,45 @@ export default function TarifParkirIndex({ tariffs, vehicleTypes }: Props) {
     const [editingTariff, setEditingTariff] = useState<TarifParkir | null>(null);
     const [deletingTariff, setDeletingTariff] = useState<TarifParkir | null>(null);
 
+    const [searchTerm, setSearchTerm] = useState(filters?.search || '');
+    const [isLoading, setIsLoading] = useState(false);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const performSearch = (term: string) => {
+        setIsLoading(true);
+        router.visit(
+            route('tarifparkir.index', {
+                page: 1,
+                per_page: tariffs.per_page,
+                search: term,
+            }),
+            {
+                preserveScroll: true,
+                preserveState: true,
+                replace: true,
+                onFinish: () => setIsLoading(false),
+            },
+        );
+    };
+
+    const onSearchChange = (term: string) => {
+        setSearchTerm(term);
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            performSearch(term);
+        }, 300);
+    };
+
     const { data, setData, post, put, processing, errors, reset } = useForm({
         vehicle_type_id: '',
         durasi_min: 0,
         durasi_max: 60,
         harga: 0,
-        is_active: true,
+        is_active: true as boolean,
     });
 
     const columns = [
@@ -179,14 +215,17 @@ export default function TarifParkirIndex({ tariffs, vehicleTypes }: Props) {
     const handlePageChange = (page: number) => {
         if (page < 1 || page > tariffs.last_page || page === tariffs.current_page) return;
 
+        setIsLoading(true);
         router.visit(
             route('tarifparkir.index', {
                 page,
                 per_page: tariffs.per_page,
+                search: searchTerm,
             }),
             {
                 preserveScroll: true,
                 preserveState: true,
+                onFinish: () => setIsLoading(false),
             },
         );
     };
@@ -194,14 +233,17 @@ export default function TarifParkirIndex({ tariffs, vehicleTypes }: Props) {
     const handlePerPageChange = (perPage: number) => {
         if (!perPage || perPage === tariffs.per_page) return;
 
+        setIsLoading(true);
         router.visit(
             route('tarifparkir.index', {
                 page: 1,
                 per_page: perPage,
+                search: searchTerm,
             }),
             {
                 preserveScroll: true,
                 preserveState: true,
+                onFinish: () => setIsLoading(false),
             },
         );
     };
@@ -226,6 +268,9 @@ export default function TarifParkirIndex({ tariffs, vehicleTypes }: Props) {
                         createLabel="Create Tariff"
                         searchable
                         searchPlaceholder="Search tarif..."
+                        onSearch={onSearchChange}
+                        searchTerm={searchTerm}
+                        loading={isLoading}
                     />
 
                     <TablePagination

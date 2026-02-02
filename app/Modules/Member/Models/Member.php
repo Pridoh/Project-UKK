@@ -42,6 +42,7 @@ class Member extends Model
      */
     protected $fillable = [
         'id',
+        'member_id',
         'vehicle_id',
         'nama',
         'tipe_member',
