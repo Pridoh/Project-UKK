@@ -30,25 +30,17 @@ class UserController extends Controller
     public function index(Request $request): Response
     {
         $perPage = $request->integer('per_page', 10);
+        $search = $request->input('search');
 
-        $users = $this->userService->getAllUsers($perPage);
+        $users = $this->userService->getAllUsers($perPage, $search);
         $roles = $this->roleService->getAllRoles();
 
         return Inertia::render('user/index', [
             'users' => $users,
             'roles' => $roles,
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new user.
-     */
-    public function create(): Response
-    {
-        $roles = $this->roleService->getAllRoles();
-
-        return Inertia::render('user/create', [
-            'roles' => $roles,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 
@@ -61,32 +53,6 @@ class UserController extends Controller
 
         return redirect()->route('user.index')
             ->with('success', 'User created successfully');
-    }
-
-    /**
-     * Display the specified user.
-     */
-    public function show(UserModel $user): Response
-    {
-        $user = $this->userService->getUserById($user->id);
-
-        return Inertia::render('user/show', [
-            'user' => $user,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified user.
-     */
-    public function edit(UserModel $user): Response
-    {
-        $user = $this->userService->getUserById($user->id);
-        $roles = $this->roleService->getAllRoles();
-
-        return Inertia::render('user/edit', [
-            'user' => $user,
-            'roles' => $roles,
-        ]);
     }
 
     /**
