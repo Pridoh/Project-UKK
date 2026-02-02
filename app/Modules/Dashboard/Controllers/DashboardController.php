@@ -3,6 +3,7 @@
 namespace App\Modules\Dashboard\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Dashboard\Services\DashboardService;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -12,12 +13,22 @@ use Inertia\Response;
  */
 class DashboardController extends Controller
 {
+    public function __construct(
+        private DashboardService $dashboardService
+    ) {}
+
     /**
      * Show the dashboard page.
      */
     public function index(): Response
     {
-        return Inertia::render('dashboard');
+        $dashboardData = $this->dashboardService->getAllDashboardData();
+
+        return Inertia::render('dashboard', [
+            'stats' => $dashboardData['stats'],
+            'revenue' => $dashboardData['revenue'],
+            'slotTracking' => $dashboardData['slotTracking'],
+            'charts' => $dashboardData['charts'],
+        ]);
     }
 }
-

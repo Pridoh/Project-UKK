@@ -2,7 +2,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 
-export function RevenueCharts() {
+type ChartData = {
+    categories: string[];
+    series: number[];
+};
+
+interface RevenueChartsProps {
+    weeklyData?: ChartData;
+    monthlyData?: ChartData;
+    yearlyData?: ChartData;
+}
+
+export function RevenueCharts({ weeklyData, monthlyData, yearlyData }: RevenueChartsProps) {
     const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
@@ -21,26 +32,10 @@ export function RevenueCharts() {
         return () => observer.disconnect();
     }, []);
 
-    // Dummy data for weekly revenue (last 7 days)
-    const weeklyData = {
-        categories: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-        series: [1800000, 2100000, 1950000, 2300000, 2450000, 3200000, 2900000],
-    };
-
-    // Dummy data for monthly revenue (current month)
-    const monthlyData = {
-        categories: Array.from({ length: 24 }, (_, i) => `${i + 1}`),
-        series: [
-            2100000, 1950000, 2300000, 2450000, 2200000, 2600000, 2800000, 2400000, 2150000, 2350000, 2500000, 2700000, 2900000, 3100000, 2850000,
-            2650000, 2400000, 2550000, 2750000, 2950000, 3050000, 2800000, 2600000, 2450000,
-        ],
-    };
-
-    // Dummy data for yearly revenue (12 months)
-    const yearlyData = {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-        series: [45000000, 52000000, 58000000, 61000000, 59000000, 63000000, 67000000, 71000000, 68000000, 72000000, 75000000, 73000000],
-    };
+    // Use provided data or fallback to empty arrays
+    const weekly = weeklyData || { categories: [], series: [] };
+    const monthly = monthlyData || { categories: [], series: [] };
+    const yearly = yearlyData || { categories: [], series: [] };
 
     const textColor = isDark ? '#f3f4f6' : '#111827';
     const gridColor = isDark ? '#374151' : '#e5e7eb';
@@ -68,7 +63,7 @@ export function RevenueCharts() {
         },
         colors: ['#3b82f6'],
         xaxis: {
-            categories: weeklyData.categories,
+            categories: weekly.categories,
             labels: {
                 style: {
                     colors: textColor,
@@ -81,7 +76,13 @@ export function RevenueCharts() {
                     colors: textColor,
                 },
                 formatter: function (val: number) {
-                    return 'Rp ' + (val / 1000000).toFixed(1) + 'jt';
+                    if (val >= 1000000) {
+                        return 'Rp ' + (val / 1000000).toFixed(1) + 'jt';
+                    }
+                    if (val >= 1000) {
+                        return 'Rp ' + (val / 1000).toFixed(0) + 'K';
+                    }
+                    return 'Rp ' + val;
                 },
             },
         },
@@ -136,7 +137,7 @@ export function RevenueCharts() {
         },
         colors: ['#10b981'],
         xaxis: {
-            categories: monthlyData.categories,
+            categories: monthly.categories,
             labels: {
                 style: {
                     colors: textColor,
@@ -149,7 +150,13 @@ export function RevenueCharts() {
                     colors: textColor,
                 },
                 formatter: function (val: number) {
-                    return 'Rp ' + (val / 1000000).toFixed(1) + 'jt';
+                    if (val >= 1000000) {
+                        return 'Rp ' + (val / 1000000).toFixed(1) + 'jt';
+                    }
+                    if (val >= 1000) {
+                        return 'Rp ' + (val / 1000).toFixed(0) + 'K';
+                    }
+                    return 'Rp ' + val;
                 },
             },
         },
@@ -205,7 +212,7 @@ export function RevenueCharts() {
         },
         colors: ['#8b5cf6'],
         xaxis: {
-            categories: yearlyData.categories,
+            categories: yearly.categories,
             labels: {
                 style: {
                     colors: textColor,
@@ -218,7 +225,13 @@ export function RevenueCharts() {
                     colors: textColor,
                 },
                 formatter: function (val: number) {
-                    return 'Rp ' + (val / 1000000).toFixed(0) + 'jt';
+                    if (val >= 1000000) {
+                        return 'Rp ' + (val / 1000000).toFixed(0) + 'jt';
+                    }
+                    if (val >= 1000) {
+                        return 'Rp ' + (val / 1000).toFixed(0) + 'K';
+                    }
+                    return 'Rp ' + val;
                 },
             },
         },
@@ -250,7 +263,7 @@ export function RevenueCharts() {
                     <CardTitle>Pendapatan Mingguan (7 Hari Terakhir)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Chart options={weeklyOptions} series={[{ name: 'Pendapatan', data: weeklyData.series }]} type="line" height={300} />
+                    <Chart options={weeklyOptions} series={[{ name: 'Pendapatan', data: weekly.series }]} type="line" height={300} />
                 </CardContent>
             </Card>
 
@@ -260,7 +273,7 @@ export function RevenueCharts() {
                     <CardTitle>Pendapatan Bulanan (Bulan Ini)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Chart options={monthlyOptions} series={[{ name: 'Pendapatan', data: monthlyData.series }]} type="bar" height={300} />
+                    <Chart options={monthlyOptions} series={[{ name: 'Pendapatan', data: monthly.series }]} type="bar" height={300} />
                 </CardContent>
             </Card>
 
@@ -270,7 +283,7 @@ export function RevenueCharts() {
                     <CardTitle>Pendapatan Tahunan (12 Bulan)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Chart options={yearlyOptions} series={[{ name: 'Pendapatan', data: yearlyData.series }]} type="area" height={300} />
+                    <Chart options={yearlyOptions} series={[{ name: 'Pendapatan', data: yearly.series }]} type="area" height={300} />
                 </CardContent>
             </Card>
         </div>
