@@ -81,8 +81,9 @@ export function RevenueClock({ dailyRevenue = 2450000, revenueGrowth = 12.5 }: R
                     </div>
                 </div>
 
+                {/* Matikan untuk target harian */}
                 {/* Additional Stats */}
-                <div className="grid grid-cols-2 gap-4 border-t pt-4">
+                {/* <div className="grid grid-cols-2 gap-4 border-t pt-4">
                     <div className="text-center">
                         <p className="text-xs text-muted-foreground">Target Harian</p>
                         <p className="text-lg font-semibold">{formatCurrency(3000000)}</p>
@@ -91,7 +92,7 @@ export function RevenueClock({ dailyRevenue = 2450000, revenueGrowth = 12.5 }: R
                         <p className="text-xs text-muted-foreground">Pencapaian</p>
                         <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">{((dailyRevenue / 3000000) * 100).toFixed(1)}%</p>
                     </div>
-                </div>
+                </div> */}
             </CardContent>
         </Card>
     );

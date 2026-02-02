@@ -1,104 +1,37 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { AlertCircle, Car, Truck } from 'lucide-react';
+import { AlertCircle, Bike, Bus, Car, Truck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface AreaOccupancy {
+type AreaCapacity = {
+    vehicleType: string;
+    vehicleTypeCode: string;
+    total: number;
+    occupied: number;
+};
+
+type SlotTrackingArea = {
     id: string;
     name: string;
-    location: string;
-    capacities: {
-        vehicleType: string;
-        icon: typeof Car;
-        total: number;
-        occupied: number;
-        color: string;
-    }[];
+    kode_area: string;
+    capacities: AreaCapacity[];
+};
+
+interface SlotTrackingProps {
+    areas?: SlotTrackingArea[];
 }
 
-export function SlotTracking() {
-    const [currentTime, setCurrentTime] = useState(new Date());
+// Helper function to get icon based on vehicle type code
+const getVehicleIcon = (code: string) => {
+    const lowerCode = code.toLowerCase();
+    if (lowerCode.includes('motor') || lowerCode === 'mtr') return Bike;
+    if (lowerCode.includes('bus')) return Bus;
+    if (lowerCode.includes('truck') || lowerCode.includes('truk')) return Truck;
+    return Car; // Default to car
+};
 
-    // Dummy data for parking areas
-    const areas: AreaOccupancy[] = [
-        {
-            id: '1',
-            name: 'Basement 1',
-            location: 'Lantai B1',
-            capacities: [
-                {
-                    vehicleType: 'Mobil',
-                    icon: Car,
-                    total: 150,
-                    occupied: 135,
-                    color: 'bg-red-500',
-                },
-                {
-                    vehicleType: 'Motor',
-                    icon: Car,
-                    total: 50,
-                    occupied: 38,
-                    color: 'bg-yellow-500',
-                },
-            ],
-        },
-        {
-            id: '2',
-            name: 'Basement 2',
-            location: 'Lantai B2',
-            capacities: [
-                {
-                    vehicleType: 'Mobil',
-                    icon: Car,
-                    total: 120,
-                    occupied: 85,
-                    color: 'bg-yellow-500',
-                },
-                {
-                    vehicleType: 'Motor',
-                    icon: Car,
-                    total: 40,
-                    occupied: 22,
-                    color: 'bg-green-500',
-                },
-            ],
-        },
-        {
-            id: '3',
-            name: 'Outdoor Area',
-            location: 'Area Terbuka',
-            capacities: [
-                {
-                    vehicleType: 'Mobil',
-                    icon: Car,
-                    total: 80,
-                    occupied: 45,
-                    color: 'bg-green-500',
-                },
-                {
-                    vehicleType: 'Bus',
-                    icon: Truck,
-                    total: 10,
-                    occupied: 7,
-                    color: 'bg-yellow-500',
-                },
-            ],
-        },
-        {
-            id: '4',
-            name: 'Roof Top',
-            location: 'Lantai Atap',
-            capacities: [
-                {
-                    vehicleType: 'Motor',
-                    icon: Car,
-                    total: 100,
-                    occupied: 48,
-                    color: 'bg-green-500',
-                },
-            ],
-        },
-    ];
+export function SlotTracking({ areas = [] }: SlotTrackingProps) {
+    const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -133,6 +66,26 @@ export function SlotTracking() {
         return { show: false, message: '', color: '' };
     };
 
+    // Show message if no areas
+    if (areas.length === 0) {
+        return (
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center justify-between">
+                        <CardTitle>Tracking Slot Real-Time</CardTitle>
+                        <div className="text-sm text-muted-foreground">Update: {currentTime.toLocaleTimeString('id-ID')}</div>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="py-8 text-center text-muted-foreground">
+                        <p>Belum ada data area parkir.</p>
+                        <p className="text-sm">Silakan tambahkan area parkir terlebih dahulu.</p>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -148,15 +101,15 @@ export function SlotTracking() {
                             <div className="flex items-start justify-between">
                                 <div>
                                     <h3 className="text-lg font-semibold">{area.name}</h3>
-                                    <p className="text-sm text-muted-foreground">{area.location}</p>
+                                    <p className="text-sm text-muted-foreground">{area.kode_area}</p>
                                 </div>
                             </div>
 
                             <div className="space-y-3">
                                 {area.capacities.map((capacity, idx) => {
-                                    const percentage = (capacity.occupied / capacity.total) * 100;
+                                    const percentage = capacity.total > 0 ? (capacity.occupied / capacity.total) * 100 : 0;
                                     const alert = getAlert(percentage);
-                                    const Icon = capacity.icon;
+                                    const Icon = getVehicleIcon(capacity.vehicleTypeCode);
 
                                     return (
                                         <div key={idx} className="space-y-2">
@@ -186,7 +139,7 @@ export function SlotTracking() {
                                                 <div
                                                     className={`absolute top-0 left-0 h-2 rounded-full transition-all ${getProgressColor(percentage)}`}
                                                     style={{
-                                                        width: `${percentage}%`,
+                                                        width: `${Math.min(percentage, 100)}%`,
                                                     }}
                                                 />
                                             </div>
